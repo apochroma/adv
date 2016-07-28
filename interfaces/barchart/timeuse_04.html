@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v3.js"></script>
+    </head>
+        
+    <body>
+        <svg height="1000" width="1000"></svg>
+        <script>
+            d3.csv('../datasets/femaleTimeHappynessDataset.csv', function(data){
+                
+                //console.log(data)
+                
+                //var happiness=['Happiness score']*1000
+                //console.log(happiness)
+                happyArray = [];
+                codesArray = [];
+                finalArr = []
+                data.forEach(function(a, i) {
+                    happyArray.push(parseFloat(a['Happiness score']));
+                    codesArray.push(a.CodeExt);
+
+                    finalArr.push({happyness:parseFloat(a['Happiness score']), index:i})
+                });
+                console.log(finalArr)
+
+                var sorted = finalArr.slice().sort(function(a, b){
+                    return d3.ascending(a.happyness, b.happyness)
+                })
+
+                //happyArray.sort().reverse();
+                
+                var min = d3.min(happyArray);
+                
+                var max = d3.max(happyArray);
+                
+                var scale = d3.scale.linear()
+                    .domain([min, max])
+                    .range([40, 300]);
+
+                // console.log(min, max, scale(happyArray[3]));
+                
+//bars
+                d3.select('svg')
+                    .selectAll('rect')
+                    .data(finalArr)
+                    .enter()
+                    .append('rect')
+                    .attr("id", function(d, i){
+                        return 'myrect_' + d.index
+                    })
+                    .attr('height', function(d, i){
+                    return scale(d.happyness)
+                })
+                    .attr('width', 20)
+                    .attr('y', function(d, i){
+                        var myOffset = scale(max) - scale(d.happyness);
+                        // console.log(myOffset);
+                        return myOffset;
+                })
+                    .attr('x', function(d, i){
+                        return i*25+20
+                })
+                    .style('fill', 'steelblue')
+                
+//text
+                d3.select('svg')
+                    .selectAll('text')
+                    .data(data)
+                    .enter()
+                    .append('text')
+                    .attr('font-family', 'MyriadPro-Regular')
+                    .attr('font-size', 10)
+                    .attr('fill', 'white')
+                        .attr('class', 'shadow')
+                    .attr('x', -295)
+                    .attr('y', function(d, i){
+                        return i*25+32
+                })
+                    .attr("transform", function(d) {
+                        return "rotate(-90)" 
+                })
+                    .text(function(d, i){
+                        return d['CodeExt']
+                })
+
+//happinessbar
+                var bar = d3.select('svg')
+                    .append('rect')
+                    .attr('height', 2)
+                    .attr('width', function(d, i){
+                        return data.length*25
+                    })                    
+                    .style('fill', 'orange')
+                    .attr('x', 18)
+                    .attr('y', 500)
+
+                var currRect
+
+                function moveBar(index){
+                    var current = sorted[index]
+                    bar.transition()
+                        .duration(1000)
+                        .attr('y', function(){
+                            return scale(max) - scale(current.happyness)
+                        })
+
+                    if(currRect){
+
+                        currRect.transition()
+                            .duration(1000)
+                            .style('fill', 'steelblue')
+                    }
+
+                    currRect = d3.select('svg')
+                        .select('#myrect_' + current.index)
+                    
+                    currRect.transition()
+                            .duration(1000)
+                            .style('fill', 'orange')
+
+
+                }
+
+                var cnt = 0
+                var dir = 1
+                d3.select('svg')
+                    .on('click', function(){
+                        moveBar(cnt)
+                        cnt+=dir
+                        if(cnt==sorted.length){
+                            dir=-1
+                            cnt = sorted.length-1
+                        } 
+                    })
+                    // .transition()
+                    // .duration(2000)
+                    // .attr('y', function(d, i){
+                    //     return scale(max) - scale(d)
+                    // })
+                    
+
+
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,65 @@
+#main {
+    float: left;
+    width: 750px;
+}
+
+#sidebar {
+    width: 100px;
+}
+
+#sequence {
+    width: 600px;
+    height: 70px;
+}
+
+#legend {
+    padding: 10px 0 0 3px;
+}
+
+#sequence text, #legend text {
+    font-weight: 600;
+    fill: #fff;
+}
+
+#chart {
+    position: relative;
+}
+
+#chart path {
+    stroke: #fff;
+}
+
+#explanation {
+    position: absolute;
+    top: 160px;
+    left: 305px;
+    width: 140px;
+    text-align: center;
+    color: #666;
+    z-index: 100000;
+}
+
+#percentage {
+    font-size: 2.5em;
+}
+
+.handwrite{
+    font-family: 'Indie Flower', cursive;
+}
+
+.happier{
+    font-size: 1500%;
+}
+
+#femaleButton, #maleButton{
+    font-size: 20em !important;}
+}
+
+
+
+/* === circle knop styles === */
+.flat-button {
+    border-style:none;
+    background: none;
+   align-items: center;
+/* ====== */ 

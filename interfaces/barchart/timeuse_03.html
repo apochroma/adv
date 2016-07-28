@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v3.min.js"></script>
+    </head>
+        
+    <body>
+        <svg height="1000" width="1000"></svg>
+        <script>
+            d3.csv('../datasets/femaleTimeHappynessDataset.csv', function(data){
+                
+                //console.log(data)
+                
+                //var happiness=['Happiness score']*1000
+                //console.log(happiness)
+
+                data.sort(function(a, b){
+                    return d3.descending(a['Happiness score'], b['Happiness score'])
+                })
+
+                console.log(data)
+                
+                var min = d3.min(data, function(d, i){
+                    //var timeString=d.['Happiness score'];
+                    //var splitted = timeString.split(':');
+                    //var timeMinutes=parseInt(splitted[0])*60+parseInt(splitted[1]);   
+                    return d
+                    
+                })
+                
+                var max = d3.max(data, function(d, i){
+                    //var timeString=d.['Happiness score'];
+                    //var splitted = timeString.split(':');
+                    //var timeMinutes=parseInt(splitted[0])*60+parseInt(splitted[1]);   
+                    return d
+                    
+                })
+                
+                var scale = d3.scale.linear()
+                    .domain([min-5, max+5])
+                    .range([0, 500])
+                
+                //bars
+                d3.select('svg')
+                    .selectAll('rect')
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('height', function(d, i){
+                        //var timeString=d.['Happiness score'];
+                        //var splitted = timeString.split(':');
+                        //var timeMinutes=parseInt(splitted[0])*60+parseInt(splitted[1]);   
+                        
+                    //return scale(timeMinutes)
+                    return scale(d)
+                    //return timeMinutes;
+                })
+                    .attr('width', 20)
+                    .attr('y', function(d, i){
+                        //var timeString=d.['Happiness score'];
+                        //var splitted = timeString.split(':');
+                        //var timeMinutes=parseInt(splitted[0])*60+parseInt(splitted[1]); 
+                    
+                        //var myOffset = max - scale(timeMinutes)
+                        var myOffset = max - scale(d)
+                        console.log(myOffset)
+                        return myOffset
+                })
+                    .attr('x', function(d, i){
+                        return i*25+20
+                })
+                    .style('fill', 'steelblue')
+                
+//text
+                d3.select('svg')
+                    .selectAll('text')
+                    .data(data)
+                    .enter()
+                    .append('text')
+                    .attr('font-family', 'MyriadPro-Regular')
+                    .attr('font-size', 10)
+                    .attr('fill', 'white')
+                        .attr('class', 'shadow')
+                    .attr('x', -544)
+                    .attr('y', function(d, i){
+                        return i*25+32
+                })
+                    .attr("transform", function(d) {
+                        return "rotate(-90)" 
+                })
+                    .text(function(d, i){
+                        var female = "Females"
+                        var male = "Males"
+                        
+                        d.SEX=d.SEX.replace('Females', '(F)')
+                        d.SEX=d.SEX.replace('Males', '(M)')
+                        
+                        //if special chars use the notation below
+                        //return d['GEO/ACL00'].concat(' ', d.SEX)
+                        return d['CodeExt']
+                })                    
+            })
+        </script>
+    </body>
+</html>
